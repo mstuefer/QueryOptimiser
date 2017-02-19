@@ -34,6 +34,13 @@ class DataReader {
         return data.get("linenumber").toString();
     }
 
+    int getSelectivity(String attribute, String operator, int value) {
+        if(operator.equals("<"))
+            return (int) data.get(attribute).stream().filter(p -> p < value).count();
+        else
+            return (int) data.get(attribute).stream().filter(p -> p > value).count();
+    }
+
     private void addTupleToData(List<String> attributes) {
         addAttributeValueToData("orderKey", attributes.get(0));
         addAttributeValueToData("linenumber", attributes.get(1));
@@ -45,6 +52,7 @@ class DataReader {
 
         double ordtotalprice = Double.parseDouble(attributes.get(6).replace("\"",""));
         addAttributeValueToData("ordtotalprice", String.valueOf((int)ordtotalprice));
+
         addAttributeValueToData("revenue", attributes.get(7));
         addAttributeValueToData("supplycost", attributes.get(8));
         addAttributeValueToData("size", attributes.get(14).replace("\"",""));
