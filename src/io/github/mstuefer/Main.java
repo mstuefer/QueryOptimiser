@@ -1,5 +1,11 @@
 package io.github.mstuefer;
 
+
+/**
+ * QueryOptimiser is a little (very basic) Java-App which allows
+ * to test/compare different algorithms for ordering selection
+ * operators.
+ * */
 public class Main {
 
     // java Main ./data/table.csv ./data/queries.txt
@@ -16,6 +22,9 @@ public class Main {
             Plan optimalPlan = new QueryOptimiser(new OptimalQueryOptimiserStrategy(dataReader)).optimise(query);
 
             System.out.println(optimalPlan);
+            System.out.println("Cost: "+new CostCalculator(optimalPlan, dataReader).getCost());
         }
+
+
     }
 }

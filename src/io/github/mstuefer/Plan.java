@@ -5,14 +5,18 @@ import java.util.Map;
 
 public class Plan {
 
-    private Map<SelectionOperator, Integer> selectionOperators;
+    private Map<SelectionOperator, Double> selectionOperators;
 
     Plan() {
         selectionOperators = new LinkedHashMap<>();
     }
 
-    void addSelectionOperator(SelectionOperator selectionOperator, int selectivity) {
+    void addSelectionOperator(SelectionOperator selectionOperator, Double selectivity) {
         selectionOperators.put(selectionOperator, selectivity);
+    }
+
+    Map<SelectionOperator, Double> getSelectionOperators() {
+        return selectionOperators;
     }
 
     @Override
