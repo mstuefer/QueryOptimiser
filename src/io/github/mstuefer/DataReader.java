@@ -34,11 +34,16 @@ class DataReader {
         return data.get("linenumber").toString();
     }
 
-    int getSelectivity(String attribute, String operator, int value) {
+    double getSelectivity(String attribute, String operator, int value) {
+        double valueQuantityOfAttribute;
         if(operator.equals("<"))
-            return (int) data.get(attribute).stream().filter(p -> p < value).count();
+            valueQuantityOfAttribute = (double) data.get(attribute).stream().filter(p -> p < value).count();
         else
-            return (int) data.get(attribute).stream().filter(p -> p > value).count();
+            valueQuantityOfAttribute = (double) data.get(attribute).stream().filter(p -> p > value).count();
+
+        double overallQuantityOfAttribute = (double) data.get(attribute).size();
+
+        return valueQuantityOfAttribute / overallQuantityOfAttribute;
     }
 
     private void addTupleToData(List<String> attributes) {

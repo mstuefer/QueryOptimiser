@@ -13,26 +13,26 @@ final class OptimalQueryOptimiserStrategy implements QueryOptimiserStrategy {
     @Override
     public Plan optimise(Query query) {
         Plan optimalPlan = new Plan();
-        Map<SelectionOperator, Integer> selectivities = new HashMap<>();
+        Map<SelectionOperator, Double> selectivities = new HashMap<>();
 
         for (SelectionOperator selectionOperator: query.getSelectionOperators()) {
-            int selectivity = dataReader.getSelectivity(selectionOperator.getKey(), selectionOperator.getOperator(), selectionOperator.getValue());
+            double selectivity = dataReader.getSelectivity(selectionOperator.getKey(), selectionOperator.getOperator(), selectionOperator.getValue());
             selectivities.put(selectionOperator, selectivity);
         }
 
-        for (Map.Entry<SelectionOperator, Integer> entry:  sortByValue(selectivities).entrySet()) {
+        for (Map.Entry<SelectionOperator, Double> entry:  sortByValue(selectivities).entrySet()) {
             optimalPlan.addSelectionOperator(entry.getKey(), entry.getValue());
         }
         return optimalPlan;
     }
 
 
-    private static Map<SelectionOperator, Integer> sortByValue(Map<SelectionOperator, Integer> unsortMap) {
-        List<Map.Entry<SelectionOperator, Integer>> list = new LinkedList<>(unsortMap.entrySet());
+    private static Map<SelectionOperator, Double> sortByValue(Map<SelectionOperator, Double> unsortMap) {
+        List<Map.Entry<SelectionOperator, Double>> list = new LinkedList<>(unsortMap.entrySet());
         list.sort(Comparator.comparing(o -> (o.getValue())));
 
-        Map<SelectionOperator, Integer> sortedMap = new LinkedHashMap<>();
-        for (Map.Entry<SelectionOperator, Integer> entry : list) {
+        Map<SelectionOperator, Double> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<SelectionOperator, Double> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
 
