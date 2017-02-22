@@ -28,8 +28,8 @@ import java.util.List;
  * */
 class CostCalculator {
 
-    private Plan plan;
-    private DataReader dataReader;
+    final private Plan plan;
+    final private DataReader dataReader;
 
     CostCalculator(Plan plan, DataReader dataReader) {
         this.plan = plan;

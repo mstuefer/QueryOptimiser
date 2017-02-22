@@ -10,7 +10,7 @@ import java.util.List;
 
 class DataReader {
 
-    private Hashtable<String, List<Integer>> data;
+    final private Hashtable<String, List<Integer>> data;
 
     DataReader(String filename) {
 

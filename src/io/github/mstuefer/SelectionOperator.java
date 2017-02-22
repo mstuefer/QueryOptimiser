@@ -1,6 +1,6 @@
 package io.github.mstuefer;
 
-public class SelectionOperator {
+class SelectionOperator {
 
     private String Key;
     private String Operator;
@@ -12,15 +12,15 @@ public class SelectionOperator {
         this.Value = Value;
     }
 
-    public String getKey() {
+    String getKey() {
         return Key;
     }
 
-    public String getOperator() {
+    String getOperator() {
         return Operator;
     }
 
-    public int getValue() {
+    int getValue() {
         return Value;
     }
 

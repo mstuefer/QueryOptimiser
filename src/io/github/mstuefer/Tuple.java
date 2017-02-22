@@ -5,7 +5,7 @@ package io.github.mstuefer;
 //  int, int, int, int, int, double, double, int, int, String, String, String, String, String, int, String
 // orderKey, linenumber, attribute3, custkey, suppkey, quantity, ordtotalprice, revenue, supplycost, attribute10, attribute11, brand, attribute13, attribute14, size, container
 
-public class Tuple {
+class Tuple {
 
     private int orderKey;
     private int linenumber;
