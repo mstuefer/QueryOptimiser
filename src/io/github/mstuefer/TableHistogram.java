@@ -16,6 +16,9 @@ import java.util.HashMap;
  * */
 class TableHistogram {
 
+    private static final int INTERVAL = 0;
+    private static final int FREQUENCY = 2;
+
     private HashMap<String, HashMap<Integer, Integer>> allRequestedAttributeHistograms;
 
     TableHistogram(TableHistogramBuilder builder) {
@@ -41,7 +44,7 @@ class TableHistogram {
 
             while ((line = rd.readLine()) != null){
                 String[] bin = line.split(",");
-                histogram.put(Integer.parseInt(bin[0]),Integer.parseInt(bin[2]));
+                histogram.put(Integer.parseInt(bin[INTERVAL]),Integer.parseInt(bin[FREQUENCY]));
             }
         } catch (IOException ioException) {
             System.out.println(ioException.getMessage());

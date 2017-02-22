@@ -44,7 +44,7 @@ class CostCalculator {
 
         for (int i = 0; i < selectionOperators.size() - 1; i++) {
             SelectionOperator so = selectionOperators.get(i);
-            selectivities[i] = dataReader.getSelectivity(so.getKey(), so.getOperator(), so.getValue());
+            selectivities[i] = dataReader.getExactSelectivity(so.getKey(), so.getOperator(), so.getValue());
             cost += multiplySelectivities(selectivities, i);
         }
         return cost;

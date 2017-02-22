@@ -3,10 +3,7 @@ package io.github.mstuefer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 class DataReader {
 
@@ -30,20 +27,18 @@ class DataReader {
 
     }
 
-    String getLineNumbers() {
-        return data.get("linenumber").toString();
-    }
-
-    double getSelectivity(String attribute, String operator, int value) {
+    double getExactSelectivity(String attribute, String operator, int value) {
         double valueQuantityOfAttribute;
         if(operator.equals("<"))
             valueQuantityOfAttribute = (double) data.get(attribute).stream().filter(p -> p < value).count();
         else
             valueQuantityOfAttribute = (double) data.get(attribute).stream().filter(p -> p > value).count();
 
-        double overallQuantityOfAttribute = (double) data.get(attribute).size();
+        return valueQuantityOfAttribute / getDatalength();
+    }
 
-        return valueQuantityOfAttribute / overallQuantityOfAttribute;
+    int getDatalength() {
+        return data.entrySet().iterator().next().getValue().size();
     }
 
     private void addTupleToData(List<String> attributes) {

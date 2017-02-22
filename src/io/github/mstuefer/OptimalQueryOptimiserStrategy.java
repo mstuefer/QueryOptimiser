@@ -16,7 +16,7 @@ final class OptimalQueryOptimiserStrategy implements QueryOptimiserStrategy {
         Map<SelectionOperator, Double> selectivities = new HashMap<>();
 
         for (SelectionOperator selectionOperator: query.getSelectionOperators()) {
-            double selectivity = dataReader.getSelectivity(selectionOperator.getKey(), selectionOperator.getOperator(), selectionOperator.getValue());
+            double selectivity = dataReader.getExactSelectivity(selectionOperator.getKey(), selectionOperator.getOperator(), selectionOperator.getValue());
             selectivities.put(selectionOperator, selectivity);
         }
 
