@@ -16,10 +16,11 @@ import java.util.LinkedHashMap;
  * */
 class TableHistogram {
 
-    private static final int INTERVAL = 0;
+    private static final int INTERVAL_START = 0;
+    private static final int INTERVAL_END = 1;
     private static final int FREQUENCY = 2;
 
-    private LinkedHashMap<String, LinkedHashMap<Integer, Integer>> allRequestedAttributeHistograms;
+    private LinkedHashMap<String, LinkedHashMap<Integer, Integer[]>> allRequestedAttributeHistograms;
 
     TableHistogram(TableHistogramBuilder builder) {
         allRequestedAttributeHistograms = new LinkedHashMap<>();
@@ -28,23 +29,21 @@ class TableHistogram {
         }
     }
 
-    LinkedHashMap<String, LinkedHashMap<Integer, Integer>> getAllRequestedAttributeHistograms() {
-        return allRequestedAttributeHistograms;
-    }
-
-    LinkedHashMap<Integer, Integer> getAttributeHistogram(String attributeName) {
+    LinkedHashMap<Integer, Integer[]> getAttributeHistogram(String attributeName) {
         return allRequestedAttributeHistograms.get(attributeName);
     }
 
-    private LinkedHashMap<Integer, Integer> readHistogram(String attributeName) {
-        LinkedHashMap<Integer, Integer> histogram = new LinkedHashMap<>();
+    // <interval_start [interval_end, frequency]>
+    private LinkedHashMap<Integer, Integer[]> readHistogram(String attributeName) {
+        LinkedHashMap<Integer, Integer[]> histogram = new LinkedHashMap<>();
         try {
             BufferedReader rd = new BufferedReader( new FileReader("data/"+attributeName+".histogram"));
             String line;
 
             while ((line = rd.readLine()) != null){
                 String[] bin = line.split(",");
-                histogram.put(Integer.parseInt(bin[INTERVAL]),Integer.parseInt(bin[FREQUENCY]));
+                Integer[] intervalEndAndFrequency = {Integer.parseInt(bin[INTERVAL_END]), Integer.parseInt(bin[FREQUENCY])};
+                histogram.put(Integer.parseInt(bin[INTERVAL_START]), intervalEndAndFrequency);
             }
         } catch (IOException ioException) {
             System.out.println(ioException.getMessage());

@@ -1,14 +1,13 @@
 package io.github.mstuefer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 class IntervalSelectivityCalculator {
 
     private static final int LOWERBOUND_SELECTIVITY = 0;
     private static final int UPPERBOUND_SELECTIVITY = 1;
-    private static final int KEY = 0;
-    private static final int VALUE = 1;
+    private static final int INTERVAL_END = 0;
+    private static final int FREQUENCY = 1;
     
     private TableHistogram tableHistogram;
     private DataReader dataReader;
@@ -28,71 +27,40 @@ class IntervalSelectivityCalculator {
 
     private double[] getIntervalSelectivity(String attributeName, String operator, int value) {
         double dataLength = dataReader.getDatalength(); // amount of tuples
-        HashMap<Integer, Integer> attributeHistogram = tableHistogram.getAttributeHistogram(attributeName);
+        LinkedHashMap<Integer, Integer[]> attributeHistogram;
+        attributeHistogram = operator.equals("<") ?
+                tableHistogram.getAttributeHistogram(attributeName) :
+                reverseOrder(tableHistogram.getAttributeHistogram(attributeName));
 
-        switch (operator) {
-            case "=":
-                return getEqualoperatorIntervalSelectivity(attributeHistogram, value);
-            case "<":
-                return getLessthanOperatorIntervalSelectiviy(attributeHistogram, value, dataLength);
-            case ">":
-                return getMorethanOperatorIntervalSelectivity(attributeHistogram, value, dataLength);
-        }
-
-        return null;
+        return getOperatorIntervalSelectivity(attributeHistogram, value, dataLength);
     }
 
-    private double[] getEqualoperatorIntervalSelectivity(HashMap<Integer, Integer> attributeHistogram, int value) {
-        double[] intervalSelectivity = new double[2]; // LOWERBOUND_SELECTIVITY, UPPERBOUND_SELECTIVITY
-        Integer[] lastIntervalFrequency = new Integer[] { null, null };
 
-        for (Map.Entry<Integer, Integer> entry: attributeHistogram.entrySet()){
-            if(lastIntervalFrequency[KEY] == null) {
-                lastIntervalFrequency[KEY] = entry.getKey();
-                lastIntervalFrequency[VALUE] = entry.getValue();
-                continue;
-            }
-
-            if(entry.getKey() > value) {
-                double dataLength = dataReader.getDatalength();
-                intervalSelectivity[LOWERBOUND_SELECTIVITY] =
-                        (lastIntervalFrequency[1] - attributeHistogram.get(lastIntervalFrequency[0]))/dataLength;
-                intervalSelectivity[UPPERBOUND_SELECTIVITY] = (lastIntervalFrequency[1])/dataLength;
-                break;
-            }
-            lastIntervalFrequency[KEY] = entry.getKey();
-            lastIntervalFrequency[VALUE] += entry.getValue();
-        }
-        return intervalSelectivity;
-    }
-
-    private double[] getLessthanOperatorIntervalSelectiviy(HashMap<Integer, Integer> attributeHistogram, int value, double dataLength) {
+    private double[] getOperatorIntervalSelectivity(LinkedHashMap<Integer, Integer[]> attributeHistogram, int value, double dataLength) {
         int currentCount = 0;
         double[] intervalSelectivity = new double[2]; // LOWERBOUND_SELECTIVITY, UPPERBOUND_SELECTIVITY
-        for (Map.Entry<Integer, Integer> bin: attributeHistogram.entrySet()) {
-            currentCount += bin.getValue();
-            if(bin.getKey() > value) {
-                intervalSelectivity[LOWERBOUND_SELECTIVITY] = 0.0;
-                intervalSelectivity[UPPERBOUND_SELECTIVITY] = (currentCount - bin.getValue()) / dataLength;
+        for (Map.Entry<Integer, Integer[]> bin: attributeHistogram.entrySet()) {
+            currentCount += bin.getValue()[FREQUENCY];
+            if(bin.getKey() <= value && bin.getValue()[INTERVAL_END] >= value) { // value in this bucket
+                intervalSelectivity[LOWERBOUND_SELECTIVITY] = (currentCount - bin.getValue()[FREQUENCY]) / dataLength;
+                if(bin.getKey() == value && bin.getValue()[INTERVAL_END] == value) // 0.3,0.3,20
+                    intervalSelectivity[UPPERBOUND_SELECTIVITY] = intervalSelectivity[LOWERBOUND_SELECTIVITY];
+                else
+                    intervalSelectivity[UPPERBOUND_SELECTIVITY] = currentCount / dataLength;
                 break;
             }
         }
+
         return intervalSelectivity;
     }
 
-    private double[] getMorethanOperatorIntervalSelectivity(HashMap<Integer, Integer> attributeHistogram, int value, double dataLength) {
-        int currentCount = 0;
-        double[] intervalSelectivity = new double[2]; // LOWERBOUND_SELECTIVITY, UPPERBOUND_SELECTIVITY
-        for (Map.Entry<Integer, Integer> entry: attributeHistogram.entrySet()) {
-            if(entry.getKey() < value) {
-                currentCount = entry.getValue();
-                continue;
-            }
-            currentCount += entry.getValue();
-        }
+    private LinkedHashMap<Integer, Integer[]> reverseOrder(LinkedHashMap<Integer, Integer[]> linkedHashMap) {
+        LinkedHashMap<Integer, Integer[]> reverseOrderedHashMap = new LinkedHashMap<>();
+        ArrayList<Integer> keys = new ArrayList<>(linkedHashMap.keySet());
 
-        intervalSelectivity[LOWERBOUND_SELECTIVITY] = 1 - (currentCount / dataLength);
-        intervalSelectivity[UPPERBOUND_SELECTIVITY] = 1.0;
-        return intervalSelectivity;
+        for (int i = (linkedHashMap.size() - 1); i >= 0; i--) {
+            reverseOrderedHashMap.put(keys.get(i), linkedHashMap.get(keys.get(i)));
+        }
+        return reverseOrderedHashMap;
     }
 }
