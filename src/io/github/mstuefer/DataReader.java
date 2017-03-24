@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-class DataReader {
+public class DataReader {
 
     final private Hashtable<String, List<Integer>> data;
 
@@ -37,7 +37,7 @@ class DataReader {
         return valueQuantityOfAttribute / getDatalength();
     }
 
-    int getDatalength() {
+    public int getDatalength() {
         return data.entrySet().iterator().next().getValue().size();
     }
 
@@ -55,6 +55,7 @@ class DataReader {
 
         addAttributeValueToData("revenue", attributes.get(7));
         addAttributeValueToData("supplycost", attributes.get(8));
+
         addAttributeValueToData("size", attributes.get(14).replace("\"",""));
     }
 

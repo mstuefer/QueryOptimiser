@@ -1,6 +1,6 @@
 package io.github.mstuefer;
 
-class SelectionOperator {
+public class SelectionOperator {
 
     private String Key;
     private String Operator;

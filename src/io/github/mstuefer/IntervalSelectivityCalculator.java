@@ -26,6 +26,8 @@ class IntervalSelectivityCalculator {
     }
 
     private double[] getIntervalSelectivity(String attributeName, String operator, int value) {
+        assert supportedOperator(operator) : "Given operator not supported";
+
         double dataLength = dataReader.getDatalength(); // amount of tuples
         LinkedHashMap<Integer, Integer[]> attributeHistogram;
         attributeHistogram = operator.equals("<") ?
@@ -35,6 +37,9 @@ class IntervalSelectivityCalculator {
         return getOperatorIntervalSelectivity(attributeHistogram, value, dataLength);
     }
 
+    private boolean supportedOperator(String operator) {
+        return operator.equals("<") || operator.equals(">");
+    }
 
     private double[] getOperatorIntervalSelectivity(LinkedHashMap<Integer, Integer[]> attributeHistogram, int value, double dataLength) {
         int currentCount = 0;

@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
  * Instead of calculating the exact histograms/statistics out of the data/table, they
  * are read from files, in order to be able to simulate 'dirty' statistics.
  * */
-class TableHistogram {
+public class TableHistogram {
 
     private static final int INTERVAL_START = 0;
     private static final int INTERVAL_END = 1;
@@ -29,7 +29,7 @@ class TableHistogram {
         }
     }
 
-    LinkedHashMap<Integer, Integer[]> getAttributeHistogram(String attributeName) {
+    public LinkedHashMap<Integer, Integer[]> getAttributeHistogram(String attributeName) {
         return allRequestedAttributeHistograms.get(attributeName);
     }
 
@@ -37,7 +37,7 @@ class TableHistogram {
     private LinkedHashMap<Integer, Integer[]> readHistogram(String attributeName) {
         LinkedHashMap<Integer, Integer[]> histogram = new LinkedHashMap<>();
         try {
-            BufferedReader rd = new BufferedReader( new FileReader("data/"+attributeName+".histogram"));
+            BufferedReader rd = new BufferedReader( new FileReader("data/bigmod/"+attributeName+".txt"));
             String line;
 
             while ((line = rd.readLine()) != null){
