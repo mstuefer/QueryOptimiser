@@ -3,7 +3,10 @@ package io.github.mstuefer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.List;
 
 public class DataReader {
 
@@ -27,7 +30,7 @@ public class DataReader {
 
     }
 
-    double getExactSelectivity(String attribute, String operator, int value) {
+    public double getExactSelectivity(String attribute, String operator, int value) {
         double valueQuantityOfAttribute;
         if(operator.equals("<"))
             valueQuantityOfAttribute = (double) data.get(attribute).stream().filter(p -> p < value).count();
