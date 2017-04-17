@@ -1,7 +1,7 @@
 package io.github.mstuefer;
 
-
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * QueryOptimiser is a little (very basic) Java-App which allows
@@ -10,14 +10,10 @@ import java.util.HashMap;
  * */
 class Main {
 
-    // java Main ./data/table.csv ./data/queries.txt
     public static void main(String[] args) {
-        //dataReader = new DataReader(args[0]);
         DataReader dataReader = new DataReader("./data/table.csv");
 
-        //queryReader = new QueryReader(args[1]);
         QueryReader queryReader = new QueryReader("./data/queries.txt");
-        System.out.println(queryReader.getQueries().get(0).getSelectionOperators().get(1));
 
         TableHistogram tableHistogram = new TableHistogramBuilder()
                 .addHistogram("custkey")
@@ -31,30 +27,31 @@ class Main {
                 .addHistogram("supplycost")
                 .build();
 
+        List<Double> optCosts = new ArrayList<>();
+        List<Double> mdpCosts = new ArrayList<>();
+
         for (Query query : queryReader.getQueries()) {
             Plan optimalPlan = new QueryOptimiser(new OptimalQueryOptimiserStrategy(dataReader)).optimise(query);
+            Plan midpointPlan = new QueryOptimiser(new MidpointQueryOptimiserStrategy(tableHistogram, dataReader)).optimise(query);
 
-            HashMap<String, HashMap<Integer, Integer>> allRequestedAttributeHistograms =
-                    tableHistogram.getAllRequestedAttributeHistograms();
+            double optimalCost = new CostCalculator(optimalPlan, dataReader).getCost();
+            optCosts.add(optimalCost);
 
-            System.out.println(allRequestedAttributeHistograms);
-            System.out.println(tableHistogram.getAttributeHistogram("orderKey"));
-            System.out.println(tableHistogram.getAttributeHistogram("supplycost"));
-
-            System.out.println(optimalPlan);
-            System.out.println("Cost of optimalPlan: "+new CostCalculator(optimalPlan, dataReader).getCost());
+            double midpointCost = new CostCalculator(midpointPlan, dataReader).getCost();
+            mdpCosts.add(midpointCost);
         }
 
-        double[] intervalSelectivity = new IntervalSelectivityCalculator(tableHistogram, dataReader)
-                .getIntervalSelectivity("orderKey", 110);
-        System.out.println("IntervalSelectivity(orderKey, 110): "+intervalSelectivity[0]+" - "+intervalSelectivity[1]);
+        double sumOptCosts = optCosts.stream().mapToDouble(Double::doubleValue).sum();
+        double sumMdpCosts = mdpCosts.stream().mapToDouble(Double::doubleValue).sum();
 
-        intervalSelectivity = new IntervalSelectivityCalculator(tableHistogram, dataReader)
-                .getIntervalSelectivity("orderKey", 9);
-        System.out.println("IntervalSelectivity(orderKey, 9): "+intervalSelectivity[0]+" - "+intervalSelectivity[1]);
+        System.out.println();
+        System.out.println("Costs of all plans (opt) :: "+sumOptCosts);
+        System.out.println("Costs of all plans (mdp) :: "+sumMdpCosts);
+        System.out.println();
 
-        intervalSelectivity = new IntervalSelectivityCalculator(tableHistogram, dataReader)
-                .getIntervalSelectivity("linenumber", 9);
-        System.out.println("IntervalSelectivity(linenumber, 9): "+intervalSelectivity[0]+" - "+intervalSelectivity[1]);
+        System.out.println("avg cost per plan optimised via opt :: "+(sumOptCosts/queryReader.getQueries().size()));
+        System.out.println("avg cost per plan optimised via mdp :: "+(sumMdpCosts/queryReader.getQueries().size()));
+        System.out.println();
+
     }
 }
