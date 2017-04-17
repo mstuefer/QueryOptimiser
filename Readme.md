@@ -28,7 +28,7 @@ Add the necessary data files, which contain the queries and the histograms:
 ```
 
 **N.B.**: The provided data files are only toy examples, you should substitute them with
-your own queries and histogram files for serious testing.
+your own datafile, queriesfile and histogramfiles for serious testing.
 
 ## Usage
 
@@ -42,11 +42,11 @@ The output should look like:
 
 ```
 
-Costs of all plans (opt) :: 2.75
-Costs of all plans (mdp) :: 2.75
+Costs of all plans (opt) :: 3.0
+Costs of all plans (mdp) :: 3.0
 
-avg cost per plan optimised via opt :: 1.375
-avg cost per plan optimised via mdp :: 1.375
+avg cost per plan optimised via opt :: 1.5
+avg cost per plan optimised via mdp :: 1.5
 
 ```
 
