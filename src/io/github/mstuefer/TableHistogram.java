@@ -37,7 +37,7 @@ public class TableHistogram {
     private LinkedHashMap<Integer, Integer[]> readHistogram(String attributeName) {
         LinkedHashMap<Integer, Integer[]> histogram = new LinkedHashMap<>();
         try {
-            BufferedReader rd = new BufferedReader( new FileReader("data/bigmod/"+attributeName+".txt"));
+            BufferedReader rd = new BufferedReader( new FileReader("data/"+attributeName+".histogram"));
             String line;
 
             while ((line = rd.readLine()) != null){
