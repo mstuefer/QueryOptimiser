@@ -21,8 +21,10 @@ public class TableHistogram {
     private static final int FREQUENCY = 2;
 
     private LinkedHashMap<String, LinkedHashMap<Integer, Integer[]>> allRequestedAttributeHistograms;
+    private String directory;
 
-    TableHistogram(TableHistogramBuilder builder) {
+    TableHistogram(TableHistogramBuilder builder, String directory) {
+        this.directory = directory;
         allRequestedAttributeHistograms = new LinkedHashMap<>();
         for (String attributeName: builder.files) {
             allRequestedAttributeHistograms.put(attributeName, readHistogram(attributeName));
@@ -37,7 +39,7 @@ public class TableHistogram {
     private LinkedHashMap<Integer, Integer[]> readHistogram(String attributeName) {
         LinkedHashMap<Integer, Integer[]> histogram = new LinkedHashMap<>();
         try {
-            BufferedReader rd = new BufferedReader( new FileReader("data/"+attributeName+".histogram"));
+            BufferedReader rd = new BufferedReader( new FileReader("data/"+directory+"/"+attributeName+".histogram"));
             String line;
 
             while ((line = rd.readLine()) != null){

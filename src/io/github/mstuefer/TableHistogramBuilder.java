@@ -17,8 +17,8 @@ class TableHistogramBuilder {
         return this;
     }
 
-    TableHistogram build() {
-        return new TableHistogram(this);
+    TableHistogram build(String directory) {
+        return new TableHistogram(this, directory);
     }
 
 }
