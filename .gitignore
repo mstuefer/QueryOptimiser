@@ -1,3 +1,6 @@
 out/
 .idea/
 src/io/github/mstuefer/OprQueryOptimiserStrategy.java
+src/io/github/mstuefer/HybridQueryOptimiserStrategy.java
+data/bigmod/
+data/bigtable/
